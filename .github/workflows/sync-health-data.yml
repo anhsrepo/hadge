@@ -1,0 +1,138 @@
+name: Sync Health Data
+
+on:
+  schedule:
+    # Run daily at 6 AM UTC (adjust to your timezone)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual triggering
+  
+jobs:
+  sync-data:
+    name: Sync Workout Data from Health Repo
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          
+      - name: Download health repo data
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          # Create temp directory
+          mkdir -p temp_health
+          
+          # Download the current year's CSV from health repo
+          YEAR=$(date +%Y)
+          echo "Downloading ${YEAR}.csv from health repository..."
+          
+          # Try to download the CSV file
+          curl -H "Authorization: token $GH_TOKEN" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o "temp_health/${YEAR}.csv" \
+               -f "https://api.github.com/repos/anhsrepo/health/contents/${YEAR}.csv" || echo "No ${YEAR}.csv found in health repo"
+          
+          # Check if file was downloaded and has content
+          if [ -f "temp_health/${YEAR}.csv" ] && [ -s "temp_health/${YEAR}.csv" ]; then
+            echo "Successfully downloaded ${YEAR}.csv"
+            cat "temp_health/${YEAR}.csv" | head -5
+          else
+            echo "No data found or file is empty"
+            exit 0
+          fi
+          
+      - name: Process and filter Zone 5 data
+        run: |
+          YEAR=$(date +%Y)
+          
+          if [ ! -f "temp_health/${YEAR}.csv" ]; then
+            echo "No health data to process"
+            exit 0
+          fi
+          
+          # Create the processed file with Zone 5 activities
+          # This script filters for high-intensity activities and maps them to our Zone 5 categories
+          python3 << 'EOF'
+          import csv
+          import os
+          from datetime import datetime
+          
+          # Zone 5 activity mappings - customize based on your Hadge app activity names
+          zone5_mappings = {
+              'Running': 'Incline Treadmill',
+              'Treadmill': 'Incline Treadmill', 
+              'HIIT': 'Others',
+              'High Intensity Interval Training': 'Others',
+              'Stair Climbing': 'Stairmaster',
+              'StairMaster': 'Stairmaster',
+              'Elliptical': 'Arc Trainer',
+              'Cross Training': 'Arc Trainer',
+              'Sauna': 'Sauna',
+              'Other': 'Others'
+          }
+          
+          year = datetime.now().strftime('%Y')
+          input_file = f'temp_health/{year}.csv'
+          output_file = f'workouts/{year}.csv'
+          
+          if not os.path.exists(input_file):
+              print(f"No input file found: {input_file}")
+              exit(0)
+          
+          # Read and filter data
+          zone5_data = []
+          
+          with open(input_file, 'r') as f:
+              reader = csv.DictReader(f)
+              for row in reader:
+                  activity_name = row.get('Name', '')
+                  
+                  # Map to Zone 5 activities
+                  for original, zone5_name in zone5_mappings.items():
+                      if original.lower() in activity_name.lower():
+                          # Only include if duration suggests high intensity (adjust threshold as needed)
+                          duration = float(row.get('Duration', 0))
+                          if duration >= 300:  # At least 5 minutes
+                              zone5_data.append({
+                                  'Name': zone5_name,
+                                  'Distance': 0,  # We only care about time for Zone 5
+                                  'Duration': int(duration),
+                                  'Date': row.get('Date', '')
+                              })
+                          break
+          
+          # Write filtered data
+          os.makedirs('workouts', exist_ok=True)
+          with open(output_file, 'w', newline='') as f:
+              fieldnames = ['Name', 'Distance', 'Duration', 'Date']
+              writer = csv.DictWriter(f, fieldnames=fieldnames)
+              writer.writeheader()
+              writer.writerows(zone5_data)
+          
+          print(f"Processed {len(zone5_data)} Zone 5 workouts to {output_file}")
+          EOF
+          
+      - name: Check for changes and commit
+        run: |
+          YEAR=$(date +%Y)
+          
+          # Configure git
+          git config --global user.name "Zone 5 Sync Bot"
+          git config --global user.email "action@github.com"
+          
+          # Check if there are changes
+          if git diff --quiet "workouts/${YEAR}.csv"; then
+            echo "No changes detected in workout data"
+          else
+            echo "Changes detected, committing updates..."
+            git add "workouts/${YEAR}.csv"
+            git commit -m "Auto-sync Zone 5 data from health repo - $(date)"
+            git push
+            echo "✅ Successfully synced and pushed Zone 5 workout data"
+          fi
+          
+      - name: Cleanup
+        run: |
+          rm -rf temp_health 
