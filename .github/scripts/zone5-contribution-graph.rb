@@ -17,52 +17,107 @@ class Zone5ContributionGraph
   def get_zone5_intensity(minutes)
     case minutes
     when 0
-      "⬜" # No Zone 5 activity
-    when 1..20
-      "🟩" # Light Zone 5 (1-20 min)
-    when 21..45
-      "🟢" # Medium Zone 5 (21-45 min)
+      "⬜" # No Zone 5 activity (like GitHub's gray)
+    when 1..15
+      "🟩" # Light Zone 5 (like GitHub's light green)
+    when 16..30
+      "🟢" # Medium Zone 5 (like GitHub's medium green)
+    when 31..45
+      "🔵" # Heavy Zone 5 (like GitHub's dark green)
     else
-      "🔥" # Heavy Zone 5 (45+ min)
+      "🟫" # Ultra Zone 5 (like GitHub's darkest green)
     end
   end
 
-  def get_last_5_days_data
-    # Get last 5 days including today
+  def get_weeks_data(num_weeks = 12)
+    # Get the last N weeks ending today
     today = Date.today
-    last_5_days = (0...5).map { |i| today - i }.reverse
+    start_date = today - (num_weeks * 7 - 1)
     
-    # Group activities by date and sum Zone 5 minutes
+    # Group activities by date
     daily_minutes = {}
-    
     activities.each do |activity|
       date = Date.parse(activity["Date"])
-      next unless last_5_days.include?(date)
+      next if date < start_date || date > today
       
       daily_minutes[date] ||= 0
-      # Convert seconds to minutes
       daily_minutes[date] += (activity["Duration"].to_f / 60).round
     end
 
-    last_5_days.map do |date|
-      minutes = daily_minutes[date] || 0
-      {
-        date: date,
-        minutes: minutes,
-        intensity: get_zone5_intensity(minutes)
-      }
+    # Create weeks array
+    weeks = []
+    current_date = start_date
+    
+    while current_date <= today
+      week_start = current_date - current_date.wday # Start of week (Sunday)
+      week = []
+      
+      7.times do |day_offset|
+        date = week_start + day_offset
+        minutes = daily_minutes[date] || 0
+        week << {
+          date: date,
+          minutes: minutes,
+          intensity: get_zone5_intensity(minutes),
+          in_range: date >= start_date && date <= today
+        }
+      end
+      
+      weeks << week
+      current_date += 7
     end
+    
+    weeks
   end
 
   def generate_contribution_graph
-    days_data = get_last_5_days_data
+    weeks_data = get_weeks_data(12) # Last 12 weeks like GitHub
     
-    # Just the contribution squares like GitHub
-    squares = days_data.map { |day| day[:intensity] }.join(" ")
+    # Month headers
+    months = []
+    weeks_data.each_with_index do |week, index|
+      if index == 0 || week[0][:date].month != weeks_data[index-1][0][:date].month
+        months << { 
+          position: index * 2, # 2 chars per week
+          name: week[0][:date].strftime("%b")
+        }
+      end
+    end
     
-    # Add total for reference
-    total_minutes = days_data.sum { |day| day[:minutes] }
-    "#{squares}\n\n#{total_minutes} minutes Zone 5 this week"
+    # Build the graph
+    graph = ""
+    
+    # Month headers
+    month_line = " " * 7  # Space for day labels
+    months.each do |month|
+      month_line += " " * (month[:position] - month_line.length + 7) if month[:position] + 7 > month_line.length
+      month_line += month[:name]
+    end
+    graph += "#{month_line}\n"
+    
+    # Day rows (Mon, Wed, Fri like GitHub)
+    ["Mon", "Wed", "Fri"].each_with_index do |day_name, day_index|
+      actual_day = [1, 3, 5][day_index] # Monday=1, Wednesday=3, Friday=5
+      
+      line = "#{day_name.ljust(4)} "
+      weeks_data.each do |week|
+        day_data = week[actual_day]
+        if day_data[:in_range]
+          line += "#{day_data[:intensity]} "
+        else
+          line += "  " # Empty space for out of range
+        end
+      end
+      graph += "#{line}\n"
+    end
+    
+    # Legend and total
+    total_minutes = weeks_data.flatten.select { |d| d[:in_range] }.sum { |d| d[:minutes] }
+    
+    graph += "\n"
+    graph += "Less ⬜🟩🟢🔵🟫 More       #{total_minutes} minutes Zone 5"
+    
+    graph
   end
 
   def run
