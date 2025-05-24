@@ -1,0 +1,26 @@
+{
+  "name": "zone5-contribution-graph",
+  "version": "1.0.0",
+  "description": "Dynamic Zone 5 training contribution graphs",
+  "main": "api/zone5-contributions.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'",
+    "start": "echo 'Use vercel dev for development'"
+  },
+  "dependencies": {
+    "@octokit/rest": "^19.0.13"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  },
+  "keywords": [
+    "fitness",
+    "zone5",
+    "github",
+    "contribution-graph",
+    "svg",
+    "vercel"
+  ],
+  "license": "MIT"
+} 
