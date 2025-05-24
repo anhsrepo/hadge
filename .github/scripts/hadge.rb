@@ -5,8 +5,8 @@ require 'optparse'
 class DirectImporter
   DISPLAYED_ACTIVITIES = {
     'Incline Treadmill': '🏃‍♂️',
-    'Stairmaster': '🪜',
-    'Arc Trainer': '⚡',
+    'Stairmaster': '⬆️',
+    'Arc Trainer': '🚴‍♂️',
     'Sauna': '🔥',
     'Others': '💪'
   }
