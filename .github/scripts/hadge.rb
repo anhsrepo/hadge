@@ -40,7 +40,7 @@ class DirectImporter
     activities.each do |activity|
       if DISPLAYED_ACTIVITIES.keys.include?(activity["Name"].to_sym)
         totals[activity["Name"]] ||= 0
-        totals[activity["Name"]] += activity["Distance"].to_f
+        totals[activity["Name"]] += (activity["Duration"].to_f / 60)
       end
     end
 
@@ -48,11 +48,11 @@ class DirectImporter
     body = totals.sort_by {|k, v| -v}.map do |key, value|
       progress = (total > 0 ? (value / total * 100).to_i : 1)
       "#{DISPLAYED_ACTIVITIES[key.to_sym]}" \
-      "#{(value / 1000).ceil.to_s.rjust(6)}km" \
+      "#{value.round.to_s.rjust(6)}min" \
       " " \
       "#{bar_chart(progress, 20)}"
     end.join("\n")
-    body << "\n#{(total / 1000).ceil.to_s.rjust(8)}km total"
+    body << "\n#{total.round.to_s.rjust(8)}min total"
 
     gist = @client.gist(@gist_id)
     filename = gist.files[gist[:files].to_h.keys.first]

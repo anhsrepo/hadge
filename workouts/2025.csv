@@ -1,11 +1,16 @@
 Name,Distance,Duration,Date
-HIIT,3000,1200,2025-01-15
-Sprint,2000,600,2025-01-14
-Zone5 Running,4000,900,2025-01-13
-High Intensity Cycling,8000,1800,2025-01-12
-Interval Training,3500,1500,2025-01-11
-HIIT,2800,1000,2025-01-10
-Sprint,1500,480,2025-01-09
-Zone5 Running,3200,720,2025-01-08
-High Intensity Cycling,7500,1620,2025-01-07
-Interval Training,4000,1800,2025-01-06 
+HIIT,0,1500,2025-01-15
+Sprint,0,900,2025-01-14
+Zone5 Running,0,1200,2025-01-13
+High Intensity Cycling,0,1800,2025-01-12
+Interval Training,0,2100,2025-01-11
+HIIT,0,1200,2025-01-10
+Sprint,0,600,2025-01-09
+Zone5 Running,0,1500,2025-01-08
+High Intensity Cycling,0,2400,2025-01-07
+Interval Training,0,1800,2025-01-06
+HIIT,0,1050,2025-01-05
+Sprint,0,750,2025-01-04
+Zone5 Running,0,1350,2025-01-03
+High Intensity Cycling,0,1950,2025-01-02
+Interval Training,0,2700,2025-01-01 
