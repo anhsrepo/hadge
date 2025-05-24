@@ -4,11 +4,11 @@ require 'optparse'
 
 class DirectImporter
   DISPLAYED_ACTIVITIES = {
-    Running: '🏃‍♂️',
-    Walking: '🚶‍♂️',
-    Hiking: '🥾',
-    Cycling: '🚴‍♂️',
-    Snowboarding: '🏂'
+    'HIIT': '🔥',
+    'Sprint': '⚡',
+    'Zone5 Running': '🏃‍♂️',
+    'High Intensity Cycling': '🚴‍♂️',
+    'Interval Training': '💪'
   }
 
   def initialize(filepath, access_token, gist_id)
