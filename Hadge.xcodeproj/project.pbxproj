@@ -254,7 +254,7 @@
 				4DB3F6702453F7AC004C8BF3 /* Sources */,
 				4DB3F6712453F7AC004C8BF3 /* Frameworks */,
 				4DB3F6722453F7AC004C8BF3 /* Resources */,
-				4DB3F68F2453FB3C004C8BF3 /* ShellScript */,
+				4DB3F68F2453FB3C004C8BF3 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -279,8 +279,9 @@
 		4DB3F66C2453F7AC004C8BF3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1630;
 				ORGANIZATIONNAME = Entire;
 				TargetAttributes = {
 					4DB3F6732453F7AC004C8BF3 = {
@@ -346,9 +347,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sourcery \\\n  --sources Hadge \\\n  --templates Hadge/Helpers/Secrets.stencil \\\n  --output Hadge/Generated \\\n  --args gitHubClientId=\\\"${GITHUB_CLIENT_ID}\\\",gitHubClientSecret=\\\"${GITHUB_CLIENT_SECRET}\\\"\n";
+			shellScript = "/opt/homebrew/bin/sourcery \\\n  --sources Hadge \\\n  --templates Hadge/Helpers/Secrets.stencil \\\n  --output Hadge/Generated \\\n  --args gitHubClientId=\\\"${GITHUB_CLIENT_ID}\\\",gitHubClientSecret=\\\"${GITHUB_CLIENT_SECRET}\\\"\n";
 		};
-		4DB3F68F2453FB3C004C8BF3 /* ShellScript */ = {
+		4DB3F68F2453FB3C004C8BF3 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -358,13 +359,14 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nswiftlint\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n/opt/homebrew/bin/swiftlint\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -467,6 +469,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = YQMF9JG7TS;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -529,6 +532,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = YQMF9JG7TS;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
