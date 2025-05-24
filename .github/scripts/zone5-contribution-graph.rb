@@ -57,35 +57,12 @@ class Zone5ContributionGraph
   def generate_contribution_graph
     days_data = get_last_5_days_data
     
-    # Create the graph header
-    graph = "Zone 5 Training - Last 5 Days\n\n"
-    
-    # Add day labels
-    day_labels = days_data.map { |day| day[:date].strftime("%a")[0] }.join("  ")
-    graph += "    #{day_labels}\n"
-    
-    # Add the contribution squares
+    # Just the contribution squares like GitHub
     squares = days_data.map { |day| day[:intensity] }.join(" ")
-    graph += "#{squares}\n\n"
     
-    # Add date labels
-    date_labels = days_data.map { |day| day[:date].strftime("%m/%d") }.join(" ")
-    graph += "#{date_labels}\n\n"
-    
-    # Add minutes summary
-    graph += "Minutes per day:\n"
-    days_data.each do |day|
-      graph += "#{day[:date].strftime('%a %m/%d')}: #{day[:minutes]}min #{day[:intensity]}\n"
-    end
-    
-    # Add total and legend
+    # Add total for reference
     total_minutes = days_data.sum { |day| day[:minutes] }
-    graph += "\nTotal Zone 5: #{total_minutes} minutes\n\n"
-    
-    # Add legend
-    graph += "Legend: ⬜ None  🟩 Light (1-20min)  🟢 Medium (21-45min)  🔥 Heavy (45min+)"
-    
-    graph
+    "#{squares}\n\n#{total_minutes} minutes Zone 5 this week"
   end
 
   def run
