@@ -4,11 +4,11 @@ require 'optparse'
 
 class DirectImporter
   DISPLAYED_ACTIVITIES = {
-    'HIIT': '🔥',
-    'Sprint': '⚡',
-    'Zone5 Running': '🏃‍♂️',
-    'High Intensity Cycling': '🚴‍♂️',
-    'Interval Training': '💪'
+    'Incline Treadmill': '🏃‍♂️',
+    'Stairmaster': '🪜',
+    'Arc Trainer': '⚡',
+    'Sauna': '🔥',
+    'Others': '💪'
   }
 
   def initialize(filepath, access_token, gist_id)
@@ -52,7 +52,7 @@ class DirectImporter
       " " \
       "#{bar_chart(progress, 20)}"
     end.join("\n")
-    body << "\n#{total.round.to_s.rjust(8)}min total"
+    body << "\n#{total.round.to_s.rjust(8)}min Zone 5 total"
 
     gist = @client.gist(@gist_id)
     filename = gist.files[gist[:files].to_h.keys.first]

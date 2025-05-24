@@ -1,16 +1,16 @@
 Name,Distance,Duration,Date
-HIIT,0,1500,2025-01-15
-Sprint,0,900,2025-01-14
-Zone5 Running,0,1200,2025-01-13
-High Intensity Cycling,0,1800,2025-01-12
-Interval Training,0,2100,2025-01-11
-HIIT,0,1200,2025-01-10
-Sprint,0,600,2025-01-09
-Zone5 Running,0,1500,2025-01-08
-High Intensity Cycling,0,2400,2025-01-07
-Interval Training,0,1800,2025-01-06
-HIIT,0,1050,2025-01-05
-Sprint,0,750,2025-01-04
-Zone5 Running,0,1350,2025-01-03
-High Intensity Cycling,0,1950,2025-01-02
-Interval Training,0,2700,2025-01-01 
+Incline Treadmill,0,1800,2025-01-15
+Stairmaster,0,1200,2025-01-14
+Arc Trainer,0,1500,2025-01-13
+Sauna,0,1200,2025-01-12
+Others,0,900,2025-01-11
+Incline Treadmill,0,2100,2025-01-10
+Stairmaster,0,1050,2025-01-09
+Arc Trainer,0,1350,2025-01-08
+Sauna,0,1500,2025-01-07
+Others,0,1200,2025-01-06
+Incline Treadmill,0,1950,2025-01-05
+Stairmaster,0,1800,2025-01-04
+Arc Trainer,0,1650,2025-01-03
+Sauna,0,900,2025-01-02
+Others,0,1050,2025-01-01 
